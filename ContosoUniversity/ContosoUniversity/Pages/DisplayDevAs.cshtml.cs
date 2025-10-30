@@ -57,7 +57,7 @@ namespace ContosoUniversity.Pages
                         }
                         else
                         {
-                            throw new NotSupportedException("Don't know how to handle concurrency conflicts for " + entry.Entity);
+                            throw new NotSupportedException("Don't know how to handle concurrency conflicts for " + entry.Metadata.Name);
                         }
                     }
                 }
