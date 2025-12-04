@@ -13,6 +13,10 @@ namespace ContosoUniversity.Pages
             _logger = logger;
         }
 
+        public void OnGet()
+        {
+            _logger.LogInformation("Acceessed {Page} at {Time}", "Index Page", DateTime.Now);
+        }
         private readonly SchoolContext db;
     }
 }

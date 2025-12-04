@@ -1,0 +1,30 @@
+@InstructorApi_HostAddress = https://localhost:7081
+
+POST {{InstructorApi_HostAddress}}/Instructors
+Content-Type: application/json
+
+{
+  "name": "Sarah Carver",
+  "isRetired": true
+}
+###
+
+GET {{InstructorApi_HostAddress}}/Instructors
+
+###
+
+GET {{InstructorApi_HostAddress}}/Instructors/1
+
+###
+PUT {{InstructorApi_HostAddress}}/Instructors/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "Sarah Carver",
+  "isRetired": false
+}
+
+###
+
+DELETE {{InstructorApi_HostAddress}}/Instructors/1

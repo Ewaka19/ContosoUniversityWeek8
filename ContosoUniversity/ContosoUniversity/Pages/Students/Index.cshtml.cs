@@ -73,6 +73,9 @@ namespace ContosoUniversity.Pages.Students
             var pageSize = Configuration.GetValue("PageSize", 4);
             Students = await PaginatedList<Student>.CreateAsync(
                 studentsIQ.AsNoTracking(), pageIndex ?? 1, pageSize);
+
+            _logger.LogInformation("Students on current page: {StudentSummaries} at {Time}",
+    Students.Select(s => new { s.ID, s.LastName, s.FirstMidName, s.EnrollmentDate }),DateTime.Now);
         }
     }
 }

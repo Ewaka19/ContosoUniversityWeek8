@@ -16,6 +16,16 @@ builder.Services.AddDbContext<SchoolContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SchoolContext") ?? throw new InvalidOperationException("Connection string 'SchoolContext' not found.")));
 builder.Services.AddDbContext<ContosoUniversityContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ContosoUniversityContextConnection") ?? throw new InvalidOperationException("Connection string 'ContosoUniversity' not found.")));
+
+builder.Services.AddDbContext<InstructorContext>(opt => opt.UseInMemoryDatabase("InstructorsList"));
+
+builder.Services.AddHealthChecks().AddDbContextCheck<SchoolContext>();
+var conStr = builder.Configuration.GetConnectionString("SchoolContext");
+if (string.IsNullOrEmpty(conStr))
+{
+    throw new InvalidOperationException("Could not find a connection string named 'SchoolContext'");
+}
+builder.Services.AddHealthChecks().AddSqlServer(conStr);
 builder.Services.AddDefaultIdentity<ContosoUniversityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ContosoUniversityContext>();
 builder.Services.AddHealthChecks();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -33,14 +43,24 @@ builder.Services.AddRazorPages(options =>
 });
 
 builder.Services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementHandler>();
+
+builder.Services.AddApplicationInsightsTelemetry();
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AtLeast21", policy =>
         policy.Requirements.Add(new MinimumAgeRequirement(21)));
 });
 
+builder.Services.AddResponseCaching();
+
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
+app.UseResponseCaching();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -52,8 +72,11 @@ else
 {
     app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
+InstructorEndpoints.Map(app);
 
 using (var scope = app.Services.CreateScope())
 {

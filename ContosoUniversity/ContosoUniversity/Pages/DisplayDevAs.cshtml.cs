@@ -27,7 +27,8 @@ namespace ContosoUniversity.Pages
             var loglevel = Configuration["Logging:LogLevel:Default"];
             devloglevel = $"Current default log level is: {loglevel}";
 
-            var student = await _context.Students.SingleAsync(s=> s.LastName == "Alonso");
+            /*
+            var student = await _context.Students.SingleAsync(s => s.LastName == "Alonso");
             student.EnrollmentDate = new DateTime(2013, 10, 27);
 
             await _context.Database.ExecuteSqlRawAsync(
@@ -41,17 +42,17 @@ namespace ContosoUniversity.Pages
                     await _context.SaveChangesAsync();
                     saved = true;
                 }
-                catch (DbUpdateConcurrencyException ex) 
+                catch (DbUpdateConcurrencyException ex)
                 {
                     foreach (var entry in ex.Entries)
                     {
-                        if(entry.Entity is Student)
+                        if (entry.Entity is Student)
                         {
                             var proposedValues = entry.CurrentValues;
                             var databaseValues = await entry.GetDatabaseValuesAsync();
 
-                            proposedValues["FirstMidName"] = databaseValues["FirstMidName"];
-                            proposedValues["EnrollmentDate"] = entry.OriginalValues["EnrollmentDate"];
+                            proposedValues["FirstMidName"] = entry.CurrentValues["FirstMidName"];
+                            proposedValues["EnrollmentDate"] = entry.CurrentValues["EnrollmentDate"];
 
                             entry.OriginalValues.SetValues(databaseValues);
                         }
@@ -62,6 +63,13 @@ namespace ContosoUniversity.Pages
                     }
                 }
             }
+
+            var studentLastName = "Alonso";
+            var result = await _context.Students.FromSql($"EXECUTE dbo.DisplayStudentFromLastName {studentLastName}").ToListAsync();
+
+            sqlName = result[0].FirstMidName + " " + result[0].LastName;
+            sqlEnrollmentDate = result[0].EnrollmentDate.ToString();
+            */
             
         }
     }
